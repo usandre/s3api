@@ -1,0 +1,16 @@
+web:
+  image: my_flask_app
+  container_name: my-flask
+  command: python -u app.py
+  ports:
+    - "5000:5000"
+  volumes:
+    - ./app/:/img-app
+  links:
+    - mongodb
+
+mongodb:
+  image: mongo:4.0
+  container_name: my-mongo
+  ports:
+    - "27017:27017"
