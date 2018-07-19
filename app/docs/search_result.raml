@@ -1,0 +1,59 @@
+#%RAML 1.0 DataType
+type: object
+description: Сохраненный результат поиска
+properties:
+  service_id:
+    type: integer
+    description: Код услуги Ракеты
+    required: true
+  client_id:
+    type: integer
+    description: Код клиента Ракеты
+    required: false
+  search_type:
+    type: string
+    description: Тип поиска
+    enum: [AVIA, HOTEL]
+    required: true
+  search_time:
+    type: datetime
+    description: дата и время поискового запроса
+    required: true
+  search_price:
+    type: array
+    description: Пределы цен
+    items:
+      type: int
+    minItems: 1
+    required: true
+    uniqueItems: true
+    example: sirena
+  search_dates:
+  search_locations:
+  search_form_data:
+  search_content:
+
+  segments:
+    type: array
+    description: Список сегментов перелета
+    items:
+      type: !include Segment.raml
+    minItems: 1
+    required: true
+    uniqueItems: true
+    example: sirena
+  refundableType:
+    type: string
+    description: Тип возвратности
+    enum: [REFUNDABLE, NONREFUNDABLE]
+    required: false
+  platingCarrierIata:
+    type: !include CarrierIata.raml
+    description: Валидирующий перевозчик
+    required: true
+  rate:
+    type: !include Rate.raml
+    required: true
+  hasBrandedFare:
+    type: boolean
+    description: Флаг "Есть брендированный тариф"

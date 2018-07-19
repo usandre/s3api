@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: Search results storage
+version: v1
+baseUri: https://search-results.raketa.travel/v1/
+mediaType:
+  - application/json
+types:
+  Search_result: !include search_result.raml
+
+/services:
+  get:
+  post:
+
+/services/{serviceId}:
+  get:
+    description: Запрос получения данных по услуге
+    is: [Response]
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            description: Набор поисков на услугу
+            properties:
+              search_result: Search_result
+  put:

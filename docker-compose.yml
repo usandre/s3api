@@ -10,7 +10,7 @@ web:
     - mongodb
 
 mongodb:
-  image: mongo:4.0
+  image: mongo
   container_name: my-mongo
   ports:
     - "27017:27017"
