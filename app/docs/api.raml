@@ -5,22 +5,99 @@ baseUri: https://search-results.raketa.travel/v1/
 mediaType:
   - application/json
 types:
-  Search_result: !include search_result.raml
+  Search_data:
+    type: object
+    description: Results displayed to a user prior to booking
+    properties:
+      supplier_name:
+        type: string
+        description: Supplier title
+        enum: ['sirena', 'travelport', 'amadeus', 'bronevik', 'ostrovok']
+        required: true
+      supplier_data:
+        type: string
+        description: Supplier data in XML
+        required: true
+  Search_result:
+    type: object
+    description: General data displayed to a user prior to booking
+    properties:
+      service_id:
+        type: integer
+        description: Raketa service code
+        required: true
+      client_id:
+        type: integer
+        description: Raketa client code
+        required: false
+      search_type:
+        type: string
+        description: Search service type
+        enum: [AVIA, HOTEL]
+        required: true
+      search_time:
+        type: datetime
+        description: Search datetime
+        required: true
+      search_price:
+        type: array
+        description: Prices min and max
+        items:
+          type: integer
+        minItems: 1
+        required: true
+        uniqueItems: true
+        example: [16000,18000]
+      search_dates:
+        type: array
+        items:
+          type: date-only
+          description: Flight dates for each segment
+        minItems: 1
+        example: ['2018-07-24','2018-07-24']
+      search_locations:
+        type: array
+        items:
+          type: string
+          description: IATA codes for each location/segment
+        minItems: 1
+        example: ['SVX','SVO']
+      search_form_data:
+        type: string
+        description: Search form data (serialized array)
+      search_content:
+        type: array
+        items:
+          type: Search_data
+        minItems: 1
+        required: true
+      tags:
+        type: array
+        description: Tags to search data
+        items:
+          type: string
+        required: false
+        example: ['SU', 'timewindow']
+
 
 /services:
   get:
-  post:
-
-/services/{serviceId}:
-  get:
-    description: Запрос получения данных по услуге
-    is: [Response]
+    description: returns last 10 services
     responses:
       200:
         body:
           application/json:
-            type: object
-            description: Набор поисков на услугу
-            properties:
-              search_result: Search_result
-  put:
+            type: array
+            items:
+              type: Search_result
+              description: array of services
+
+/services/{serviceId}:
+  get:
+    description: Returns search data by service id
+    responses:
+      200:
+        body:
+          application/json:
+            type: Search_result
+            description: Search DATA

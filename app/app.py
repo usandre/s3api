@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template, jsonify
+from flask import Flask, redirect, url_for, request, render_template, jsonify, make_response
 from pymongo import MongoClient
 
 from entities.container import container
@@ -7,33 +7,27 @@ from models.record import record
 app = Flask(__name__)
 
 client = MongoClient( 'mongodb', 27017)
-db = client.search_results
 
 storage = container()
-storage.set('db', db)
+storage.set('db', client.search_results)
 
 model = record(storage)
 
 @app.route('/')
-def todo():
-    _items = db.tododb.find()
-    items = [item for item in _items]
-    return render_template('todo.html', items=items)
+def default():
+    output = model.list()
+    return jsonify({'result': output})
 
 
 @app.route('/services', methods=['POST'])
 def new():
-    model.id = request.form['id']
-    model.xml = request.form['xml']
-    model.type = request.form['type']
+    # @todo mmake service_id unique
+    model.save(request.json)
+    return jsonify({'result': 'OK'})
 
-    model.save()
-
-    return redirect(url_for('todo'))
-
-@app.route('/services/<string:id>', methods=['GET'])
+@app.route('/services/<int:id>', methods=['GET'])
 def find_service(id):
-    item = model.get(id)
+    item = model.get_by_id(id)
     return jsonify({'result': item})
 
 @app.route('/services', methods=['GET'])
