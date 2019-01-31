@@ -27,9 +27,9 @@ def new(sub_id='default'):
 @app.route('/wh/<string:sub_id>', methods=['GET'])
 def get_onelist(sub_id):
     output = model.list(sub_id)
-    return jsonify({'result': output})
+    return jsonify({'Webhook ' + sub_id + ' items': output})
 
-@app.route('/wh/<int:id>', methods=['GET'])
+@app.route('/wh/<string:sub_id>/<int:id>', methods=['GET'])
 def find_service(id):
     item = model.get_by_id(id)
     return jsonify({'result': item})
@@ -37,7 +37,7 @@ def find_service(id):
 @app.route('/wh', methods=['GET'])
 def get_all():
     output = model.list_buckets()
-    return jsonify({'result': output})
+    return jsonify({'Webhooks': output})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
