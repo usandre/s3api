@@ -9,7 +9,7 @@ app = Flask(__name__)
 client = MongoClient( 'mongodb', 27017)
 
 storage = container()
-storage.set('db', client.search_results)
+storage.set('db', client.subscriptions)
 
 model = record(storage)
 
@@ -19,20 +19,24 @@ def default():
     return jsonify({'result': output})
 
 
-@app.route('/services', methods=['POST'])
-def new():
-    # @todo mmake service_id unique
-    model.save(request.json)
+@app.route('/wh/<string:sub_id>', methods=['POST'])
+def new(sub_id='default'):
+    model.save(sub_id, request.json)
     return jsonify({'result': 'OK'})
 
-@app.route('/services/<int:id>', methods=['GET'])
+@app.route('/wh/<string:sub_id>', methods=['GET'])
+def get_onelist(sub_id):
+    output = model.list(sub_id)
+    return jsonify({'result': output})
+
+@app.route('/wh/<int:id>', methods=['GET'])
 def find_service(id):
     item = model.get_by_id(id)
     return jsonify({'result': item})
 
-@app.route('/services', methods=['GET'])
+@app.route('/wh', methods=['GET'])
 def get_all():
-    output = model.list()
+    output = model.list_buckets()
     return jsonify({'result': output})
 
 if __name__ == "__main__":

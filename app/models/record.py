@@ -8,15 +8,18 @@ class record():
     def __init__(self, container):
         self.db = container.get('db')
 
-    def save(self, result):
-        self.db.search_results.insert_one(result)
+    def save(self, sub_id, result):
+        self.db[sub_id].insert_one(result)
 
-    def list(self):
+    def list_buckets(self):
+        return self.db.list_collection_names()
+
+    def list(self, sub_id):
         output = []
-        for q in self.db.search_results.find({}, {"_id": 0}):
+        for q in self.db[sub_id].find({}, {"_id": 0}):
             output.append(q)
         return output
 
-    def get_by_id(self, id):
-        item = self.db.search_results.find_one({'service_id': id}, {"_id": 0})
+    def get_by_id(self, sub_id, id):
+        item = self.db[sub_id].find_one({'service_id': id}, {"_id": 0})
         return item
