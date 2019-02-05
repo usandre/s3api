@@ -15,29 +15,38 @@ model = record(storage)
 
 @app.route('/')
 def default():
-    output = model.list()
-    return jsonify({'result': output})
+    return jsonify({'open': '/wh/'})
 
-
-@app.route('/wh/<string:sub_id>', methods=['POST'])
-def new(sub_id='default'):
-    model.save(sub_id, request.json)
-    return jsonify({'result': 'OK'})
-
-@app.route('/wh/<string:sub_id>', methods=['GET'])
-def get_onelist(sub_id):
-    output = model.list(sub_id)
-    return jsonify({'Webhook ' + sub_id + ' items': output})
-
-@app.route('/wh/<string:sub_id>/<int:id>', methods=['GET'])
-def find_service(id):
-    item = model.get_by_id(id)
-    return jsonify({'result': item})
-
+# LISTING
 @app.route('/wh', methods=['GET'])
+@app.route('/wh/', methods=['GET'])
 def get_all():
     output = model.list_buckets()
     return jsonify({'Webhooks': output})
+
+# Webhooks
+@app.route('/wh/<string:wh_id>', methods=['POST'])
+def new_item(wh_id='default'):
+    model.save(wh_id, request.json)
+    return jsonify({'result': 'OK'})
+
+@app.route('/wh/<string:wh_id>', methods=['GET'])
+@app.route('/wh/<string:wh_id>/', methods=['GET'])
+def webhook_content(wh_id):
+    output = model.bucket_list(wh_id)
+    return jsonify({'Webhook [' + wh_id + '] items': output})
+
+@app.route('/wh/<string:wh_id>', methods=['DELETE'])
+def webhook_delete(wh_id):
+    output = model.collection_delete(wh_id)
+    return jsonify({'Webhook [' + wh_id + '] items': output})
+
+
+# Webhook items
+@app.route('/wh/<string:wh_id>/<string:id>', methods=['GET'])
+def find_service(wh_id, id):
+    item = model.get_by_id(wh_id, id)
+    return jsonify({'result': item})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

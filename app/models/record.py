@@ -14,12 +14,16 @@ class record():
     def list_buckets(self):
         return self.db.list_collection_names()
 
-    def list(self, sub_id):
+    def bucket_list(self, sub_id):
         output = []
         for q in self.db[sub_id].find({}, {"_id": 0}):
             output.append(q)
         return output
 
-    def get_by_id(self, sub_id, id):
-        item = self.db[sub_id].find_one({'service_id': id}, {"_id": 0})
+    def collection_delete(self,collection_id):
+        result = self.db[collection_id].drop()
+        return {'deleted': 'ok'}
+
+    def get_by_id(self, wh_id, id):
+        item = self.db[wh_id].find_one({}, {"_id": 0})
         return item
