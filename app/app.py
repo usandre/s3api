@@ -36,7 +36,7 @@ def new_item(wh_id='default'):
     check = signature()
     if 'Concur-Signature' in request.headers:
         header_signature = request.headers['Concur-Signature']
-        verify = check.verify(header_signature, request.json)
+        verify = check.verify(header_signature, request.data)
         if (verify == False):
             record_merged = {'result': 'wrong signature', 'event': request.json, 'headers': dict(request.headers)}
             model.save(wh_id, record_merged)
