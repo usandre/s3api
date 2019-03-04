@@ -21,7 +21,7 @@ model = record(storage)
 
 @app.route('/')
 def default():
-    return jsonify({'open': '/wh/'})
+    return jsonify({'open': 'OK'})
 
 # LISTING
 @app.route('/wh', methods=['GET'])
