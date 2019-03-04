@@ -34,12 +34,13 @@ def get_all():
 @app.route('/wh/<string:wh_id>', methods=['POST'])
 def new_item(wh_id='default'):
     check = signature()
-    if 'Signature' in request.headers:
-        verify = check.verify(signature, request.json)
+    if 'Concur-Signature' in request.headers:
+        header_signature = request.headers['Concur-Signature']
+        verify = check.verify(header_signature, request.json)
         if (verify == False):
             record_merged = {'result': 'wrong signature', 'event': request.json, 'headers': dict(request.headers)}
             model.save(wh_id, record_merged)
-            return jsonify({'result': 'OK'})
+            return jsonify({'result': 'not OK!'})
     record_merged = {'event': request.json, 'headers' : dict(request.headers)}
     model.save(wh_id, record_merged)
     return jsonify({'result': 'OK'})
