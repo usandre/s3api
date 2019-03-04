@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from models.search_result import search_result
 
 class record():
 

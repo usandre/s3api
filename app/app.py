@@ -1,8 +1,13 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify, make_response
 from pymongo import MongoClient
+from OpenSSL import SSL
 
 from entities.container import container
 from models.record import record
+
+# context = SSL.Context(SSL.PR .PROTOCOL_TLSv1_2)
+# context.use_privatekey_file('pki/private.key')
+# context.use_certificate_file('pki/certificate.pem')
 
 app = Flask(__name__)
 
@@ -27,7 +32,8 @@ def get_all():
 # Webhooks
 @app.route('/wh/<string:wh_id>', methods=['POST'])
 def new_item(wh_id='default'):
-    model.save(wh_id, request.json)
+    record_merged = {'event': request.json, 'headers' : dict(request.headers)}
+    model.save(wh_id, record_merged)
     return jsonify({'result': 'OK'})
 
 @app.route('/wh/<string:wh_id>', methods=['GET'])
@@ -44,9 +50,10 @@ def webhook_delete(wh_id):
 
 # Webhook items
 @app.route('/wh/<string:wh_id>/<string:id>', methods=['GET'])
+
 def find_service(wh_id, id):
     item = model.get_by_id(wh_id, id)
-    return jsonify({'result': item})
+    return jsonify(item)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
