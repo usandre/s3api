@@ -6,10 +6,6 @@ from entities.container import container
 from models.record import record
 from models.signature import signature
 
-# context = SSL.Context(SSL.PR .PROTOCOL_TLSv1_2)
-# context.use_privatekey_file('pki/private.key')
-# context.use_certificate_file('pki/certificate.pem')
-
 app = Flask(__name__)
 
 client = MongoClient( 'mongodb', 27017)
@@ -34,16 +30,17 @@ def get_all():
 @app.route('/wh/<string:wh_id>', methods=['POST'])
 def new_item(wh_id='default'):
     check = signature()
+    signature_check = 'not present'
     if 'Concur-Signature' in request.headers:
         header_signature = request.headers['Concur-Signature']
         verify = check.verify(header_signature, request.data)
         if (verify == False):
-            record_merged = {'result': 'wrong signature', 'event': request.json, 'headers': dict(request.headers)}
-            model.save(wh_id, record_merged)
-            return jsonify({'result': 'not OK!'})
-    record_merged = {'event': request.json, 'headers' : dict(request.headers)}
+            signature_check = 'invalid'
+        else:
+            signature_check = 'valid'
+    record_merged = {'signature': signature_check,'event': request.json, 'headers' : dict(request.headers)}
     model.save(wh_id, record_merged)
-    return jsonify({'result': 'OK'})
+    return jsonify({'result': 'OK', 'signature': signature_check})
 
 @app.route('/wh/<string:wh_id>', methods=['GET'])
 @app.route('/wh/<string:wh_id>/', methods=['GET'])
