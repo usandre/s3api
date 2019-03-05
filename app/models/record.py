@@ -24,5 +24,7 @@ class record():
         return {'deleted': 'ok'}
 
     def get_by_id(self, wh_id, id):
-        item = self.db[wh_id].find_one({}, {"_id": 0})
+        item = self.db[wh_id].find_one({"event.id" : id}, {"_id": 0})
+        if item is None:
+            item = self.db[wh_id].find_one({"event.correlationId": id}, {"_id": 0})
         return item

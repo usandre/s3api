@@ -24,7 +24,7 @@ def default():
 @app.route('/wh/', methods=['GET'])
 def get_all():
     output = model.list_buckets()
-    return jsonify({'Webhooks': output})
+    return jsonify(output)
 
 # Webhooks
 @app.route('/wh/<string:wh_id>', methods=['POST'])
@@ -46,7 +46,7 @@ def new_item(wh_id='default'):
 @app.route('/wh/<string:wh_id>/', methods=['GET'])
 def webhook_content(wh_id):
     output = model.bucket_list(wh_id)
-    return jsonify({'Webhook [' + wh_id + '] items': output})
+    return jsonify(output)
 
 @app.route('/wh/<string:wh_id>', methods=['DELETE'])
 def webhook_delete(wh_id):
@@ -56,7 +56,6 @@ def webhook_delete(wh_id):
 
 # Webhook items
 @app.route('/wh/<string:wh_id>/<string:id>', methods=['GET'])
-
 def find_service(wh_id, id):
     item = model.get_by_id(wh_id, id)
     return jsonify(item)
