@@ -55,7 +55,7 @@ def webhook_delete(wh_id):
     output = model.collection_delete(wh_id)
     if output is None:
         return jsonify({'result' : 'not found'}), 404
-    return jsonify({'Webhook [' + wh_id + '] items': output})
+    return jsonify({'Webhook [' + wh_id + '] dropped ': output})
 
 
 # Webhook items

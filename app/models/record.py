@@ -22,8 +22,11 @@ class record():
         return output
 
     def collection_delete(self, collection_id):
-        result = self.db[collection_id].drop()
-        return result
+        if collection_id in self.db.list_collection_names():
+            result = self.db[collection_id].drop()
+        else:
+            return None
+        return True
 
     def get_by_id(self, wh_id, id):
         item = self.db[wh_id].find_one({"event.id" : id}, {"_id": 0})
