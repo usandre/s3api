@@ -46,11 +46,15 @@ def new_item(wh_id='default'):
 @app.route('/wh/<string:wh_id>/', methods=['GET'])
 def webhook_content(wh_id):
     output = model.bucket_list(wh_id)
+    if output is None:
+        return jsonify({'result' : 'not found'}), 404
     return jsonify(output)
 
 @app.route('/wh/<string:wh_id>', methods=['DELETE'])
 def webhook_delete(wh_id):
     output = model.collection_delete(wh_id)
+    if output is None:
+        return jsonify({'result' : 'not found'}), 404
     return jsonify({'Webhook [' + wh_id + '] items': output})
 
 
@@ -58,6 +62,8 @@ def webhook_delete(wh_id):
 @app.route('/wh/<string:wh_id>/<string:id>', methods=['GET'])
 def find_service(wh_id, id):
     item = model.get_by_id(wh_id, id)
+    if item is None:
+        return jsonify({'result' : 'not found'}), 404
     return jsonify(item)
 
 if __name__ == "__main__":
