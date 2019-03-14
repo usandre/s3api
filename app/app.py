@@ -20,15 +20,15 @@ def default():
     return jsonify({'open': 'OK'})
 
 # LISTING
-@app.route('/wh', methods=['GET'])
-@app.route('/wh/', methods=['GET'])
+@app.route('/sub', methods=['GET'])
+@app.route('/sub/', methods=['GET'])
 def get_all():
     output = model.list_buckets()
     return jsonify(output)
 
 # Webhooks
-@app.route('/wh/<string:wh_id>', methods=['POST'])
-def new_item(wh_id='default'):
+@app.route('/sub/<string:sub_id>', methods=['POST'])
+def new_item(sub_id='default'):
     check = signature()
     signature_check = 'not present'
     if 'Concur-Signature' in request.headers:
@@ -39,29 +39,29 @@ def new_item(wh_id='default'):
         else:
             signature_check = 'valid'
     record_merged = {'signature': signature_check,'event': request.json, 'headers' : dict(request.headers)}
-    model.save(wh_id, record_merged)
+    model.save(sub_id, record_merged)
     return jsonify({'result': 'OK', 'signature': signature_check})
 
-@app.route('/wh/<string:wh_id>', methods=['GET'])
-@app.route('/wh/<string:wh_id>/', methods=['GET'])
-def webhook_content(wh_id):
-    output = model.bucket_list(wh_id)
+@app.route('/sub/<string:sub_id>', methods=['GET'])
+@app.route('/sub/<string:sub_id>/', methods=['GET'])
+def webhook_content(sub_id):
+    output = model.bucket_list(sub_id)
     if output is None:
         return jsonify({'result' : 'not found'}), 404
     return jsonify(output)
 
-@app.route('/wh/<string:wh_id>', methods=['DELETE'])
-def webhook_delete(wh_id):
-    output = model.collection_delete(wh_id)
+@app.route('/sub/<string:sub_id>', methods=['DELETE'])
+def webhook_delete(sub_id):
+    output = model.collection_delete(sub_id)
     if output is None:
         return jsonify({'result' : 'not found'}), 404
-    return jsonify({'Webhook [' + wh_id + '] dropped ': output})
+    return jsonify({'Webhook [' + sub_id + '] dropped ': output})
 
 
 # Webhook items
-@app.route('/wh/<string:wh_id>/<string:id>', methods=['GET'])
-def find_service(wh_id, id):
-    item = model.get_by_id(wh_id, id)
+@app.route('/sub/<string:sub_id>/<string:id>', methods=['GET'])
+def find_service(sub_id, id):
+    item = model.get_by_id(sub_id, id)
     if item is None:
         return jsonify({'result' : 'not found'}), 404
     return jsonify(item)

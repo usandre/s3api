@@ -7,17 +7,17 @@ class record():
     def __init__(self, container):
         self.db = container.get('db')
 
-    def save(self, sub_id, result):
-        self.db[sub_id].insert_one(result)
+    def save(self, collection_id, result):
+        self.db[collection_id].insert_one(result)
 
     def list_buckets(self):
         return self.db.list_collection_names()
 
-    def bucket_list(self, sub_id):
-        if sub_id not in self.db.list_collection_names():
+    def bucket_list(self, collection_id):
+        if collection_id not in self.db.list_collection_names():
             return None
         output = []
-        for q in self.db[sub_id].find({}, {"_id": 0}):
+        for q in self.db[collection_id].find({}, {"_id": 0}):
             output.append(q)
         return output
 
@@ -28,8 +28,8 @@ class record():
             return None
         return True
 
-    def get_by_id(self, wh_id, id):
-        item = self.db[wh_id].find_one({"event.id" : id}, {"_id": 0})
+    def get_by_id(self, collection_id, id):
+        item = self.db[collection_id].find_one({"event.id" : id}, {"_id": 0})
         if item is None:
-            item = self.db[wh_id].find_one({"event.correlationId": id}, {"_id": 0})
+            item = self.db[collection_id].find_one({"event.correlationId": id}, {"_id": 0})
         return item
