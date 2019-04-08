@@ -28,7 +28,7 @@ def get_all():
     return jsonify(output)
 
 # Webhooks
-@app.route('/sub/<string:sub_id>', methods=['POST'])
+@app.route('/sub/<string:sub_id>', methods=['POST','PUT'])
 def new_item(sub_id='default'):
     code = 200
     args = request.args
