@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify, make_response
 from pymongo import MongoClient
 from OpenSSL import SSL
+from random import randint
 
 from entities.container import container
 from models.record import record
@@ -29,6 +30,17 @@ def get_all():
 # Webhooks
 @app.route('/sub/<string:sub_id>', methods=['POST'])
 def new_item(sub_id='default'):
+    code = 200
+    args = request.args
+    if ('code' in args and 'prob' in args):
+        try:
+            code = int(args['code'])
+            prob =  int(args['prob'])
+        except:
+            prob = 0
+        if (code in [300, 500, 501, 503, 404, 400, 401] and prob in range(1, 101) and randint(1, 100) < prob):
+            return jsonify({'result' : 'Error ' + str(code) + ' probability %' + str(prob) }), code
+
     check = signature()
     signature_check = 'not present'
     if 'Concur-Signature' in request.headers:
@@ -40,7 +52,7 @@ def new_item(sub_id='default'):
             signature_check = 'valid'
     record_merged = {'signature': signature_check,'event': request.json, 'headers' : dict(request.headers)}
     model.save(sub_id, record_merged)
-    return jsonify({'result': 'OK', 'signature': signature_check})
+    return jsonify({'result': 'OK', 'signature': signature_check}), code
 
 @app.route('/sub/<string:sub_id>', methods=['GET'])
 @app.route('/sub/<string:sub_id>/', methods=['GET'])
