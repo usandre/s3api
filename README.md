@@ -10,3 +10,16 @@
 - No endpoint auto-purge (like requestbin), events will be kept until you send DEL /sub/bla-bla-bla
 - Can be installed locally (docker) for testing purposes (HTTP), http://localhost:5000
 - for POST|PUT you can specify params ?code=404&prob=75 that will return 404 with probability of 75%
+
+## Install
+`docker-compose up -d`
+
+## Usage
+
+ Method | Resource | Description| Params
+ --- | --- | --- | ---
+GET | /sub/ | List of buckets | 
+POST, PUT | /sub/{name} | Saves event into {name} bucket | ?code=400&prob=70
+GET | /sub/{name} | Lists events from {name} bucket|
+GET | /sub/{name}/{event} | Returns record with id {event} from  from {name} bucket|
+DEL | /sub/{name} | Deletes {name} bucket  |
