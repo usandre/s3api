@@ -5,6 +5,6 @@ itsdangerous==0.24
 Jinja2==2.10.1
 MarkupSafe==1.0
 pymongo==3.7.0
-Werkzeug==0.15.3
+Werkzeug==0.15.5
 pyOpenSSL
 flask_restplus
