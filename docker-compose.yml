@@ -7,7 +7,7 @@ services:
     container_name: webhook-flask
     command: python -u app.py
     ports:
-      - "5000:5000"
+      - "5050:5000"
     volumes:
       - ./app/:/img-app
     links:
